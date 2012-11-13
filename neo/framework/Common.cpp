@@ -2726,12 +2726,7 @@ void idCommonLocal::Init( int argc, char **argv ) {
 	// we want to use the SDL event queue for dedicated servers. That
 	// requires video to be initialized, so we just use the dummy
 	// driver for headless boxen
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
-#else
-	char dummy[] = "SDL_VIDEODRIVER=dummy\0";
-	SDL_putenv(dummy);
-#endif
 #endif
 
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO))
@@ -2769,12 +2764,9 @@ void idCommonLocal::Init( int argc, char **argv ) {
 		idCVar::RegisterStaticVars();
 
 		// print engine version
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_version sdlv;
 		SDL_GetVersion(&sdlv);
-#else
-		SDL_version sdlv = *SDL_Linked_Version();
-#endif
+
 		Printf( "%s using SDL v%u.%u.%u\n",
 				version.string, sdlv.major, sdlv.minor, sdlv.patch );
 
