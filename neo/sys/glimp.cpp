@@ -38,14 +38,8 @@ idCVar in_nograb("in_nograb", "0", CVAR_SYSTEM | CVAR_NOCHEAT, "prevents input g
 
 static bool grabbed = false;
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 static SDL_Window *window = NULL;
 static SDL_GLContext context = NULL;
-#else
-static SDL_Surface *window = NULL;
-#define SDL_WINDOW_OPENGL SDL_OPENGL
-#define SDL_WINDOW_FULLSCREEN SDL_FULLSCREEN
-#endif
 
 /*
 ===================
@@ -136,7 +130,6 @@ bool GLimp_Init(glimpParms_t parms) {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, parms.multiSamples ? 1 : 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, parms.multiSamples);
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 		window = SDL_CreateWindow(GAME_NAME,
 									SDL_WINDOWPOS_UNDEFINED,
 									SDL_WINDOWPOS_UNDEFINED,
@@ -155,24 +148,6 @@ bool GLimp_Init(glimpParms_t parms) {
 		SDL_GetWindowSize(window, &glConfig.vidWidth, &glConfig.vidHeight);
 
 		glConfig.isFullscreen = (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
-#else
-		SDL_WM_SetCaption(GAME_NAME, GAME_NAME);
-
-		if (SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, r_swapInterval.GetInteger()) < 0)
-			common->Warning("SDL_GL_SWAP_CONTROL not supported");
-
-		window = SDL_SetVideoMode(parms.width, parms.height, colorbits, flags);
-		if (!window) {
-			common->DPrintf("Couldn't set GL mode %d/%d/%d: %s",
-							channelcolorbits, tdepthbits, tstencilbits, SDL_GetError());
-			continue;
-		}
-
-		glConfig.vidWidth = window->w;
-		glConfig.vidHeight = window->h;
-
-		glConfig.isFullscreen = (window->flags & SDL_FULLSCREEN) == SDL_FULLSCREEN;
-#endif
 
 		common->Printf("Using %d color bits, %d depth, %d stencil display\n",
 						channelcolorbits, tdepthbits, tstencilbits);
@@ -212,7 +187,6 @@ GLimp_Shutdown
 void GLimp_Shutdown() {
 	common->Printf("Shutting down OpenGL subsystem\n");
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (context) {
 		SDL_GL_DeleteContext(context);
 		context = NULL;
@@ -222,7 +196,6 @@ void GLimp_Shutdown() {
 		SDL_DestroyWindow(window);
 		window = NULL;
 	}
-#endif
 }
 
 /*
@@ -231,11 +204,7 @@ GLimp_SwapBuffers
 ===================
 */
 void GLimp_SwapBuffers() {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_GL_SwapWindow(window);
-#else
-	SDL_GL_SwapBuffers();
-#endif
 }
 
 /*
@@ -249,11 +218,7 @@ void GLimp_SetGamma(unsigned short red[256], unsigned short green[256], unsigned
 		return;
 	}
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	if (SDL_SetWindowGammaRamp(window, red, green, blue))
-#else
-	if (SDL_SetGammaRamp(red, green, blue))
-#endif
 		common->Warning("Couldn't set gamma ramp: %s", SDL_GetError());
 }
 
@@ -306,13 +271,8 @@ void GLimp_GrabInput(int flags) {
 		return;
 	}
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_ShowCursor(flags & GRAB_HIDECURSOR ? SDL_DISABLE : SDL_ENABLE);
 	SDL_SetRelativeMouseMode(flags & GRAB_HIDECURSOR ? SDL_TRUE : SDL_FALSE);
 	SDL_SetWindowGrab(window, grab ? SDL_TRUE : SDL_FALSE);
-#else
-	SDL_ShowCursor(flags & GRAB_HIDECURSOR ? SDL_DISABLE : SDL_ENABLE);
-	SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
-#endif
 #endif
 }
