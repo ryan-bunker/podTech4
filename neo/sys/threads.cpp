@@ -110,11 +110,9 @@ void Sys_ShutdownThreads() {
 			continue;
 
 		Sys_Printf("WARNING: Thread '%s' still running\n", thread[i]->name);
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-		// TODO no equivalent in SDL2
-#else
-		SDL_KillThread(thread[i]->threadHandle);
-#endif
+
+		// TODO no shutdown thread equivalent in SDL2
+
 		thread[i] = NULL;
 	}
 
@@ -223,11 +221,7 @@ Sys_CreateThread
 void Sys_CreateThread(xthread_t function, void *parms, xthreadInfo& info, const char *name) {
 	Sys_EnterCriticalSection();
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_Thread *t = SDL_CreateThread(function, name, parms);
-#else
-	SDL_Thread *t = SDL_CreateThread(function, parms);
-#endif
 
 	if (!t) {
 		common->Error("ERROR: SDL_thread for '%s' failed\n", name);
