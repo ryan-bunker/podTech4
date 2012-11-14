@@ -227,6 +227,7 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL ${CMAKE_C_FLAGS_MINSIZEREL})
 if(WIN32)
 	add_definitions(-DWINVER=0x0501)
 	add_definitions(-D_WIN32_WINNT=0x0501)
+	add_definitions(-D_ALLOW_KEYWORD_MACROS)
 
 	set(sys_libs ${sys_libs}
 		winmm
