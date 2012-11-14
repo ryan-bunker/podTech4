@@ -208,6 +208,25 @@ void GLimp_SwapBuffers() {
 }
 
 /*
+==================================
+GLimp_SnapshotGamma
+---------------------
+Saves the current SDL window's gamma, so that it will
+be restored when the game closes
+=================================
+*/
+void GLimp_SnapshotGamma()
+{
+	if (!window) {
+		common->Warning("GLimp_SnapshotGamma called without window");
+		return;
+	}
+
+	if (SDL_GetWindowGammaRamp(window, NULL, NULL, NULL))
+		common->Warning("Couldn't get gamma ramp: %s", SDL_GetError());
+}
+
+/*
 =================
 GLimp_SetGamma
 =================

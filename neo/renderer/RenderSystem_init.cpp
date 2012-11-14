@@ -1633,6 +1633,14 @@ void R_MakeAmbientMap_f( const idCmdArgs &args ) {
 
 //============================================================================
 
+/*
+=============
+R_SnapshotGamma
+=============
+*/
+void R_SnapshotGamma(void) {
+	GLimp_SnapshotGamma();
+}
 
 /*
 ===============
