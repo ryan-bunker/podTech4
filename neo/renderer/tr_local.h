@@ -1035,6 +1035,7 @@ void R_InitOpenGL( void );
 
 void R_DoneFreeType( void );
 
+void R_SnapshotGamma( void );
 void R_SetColorMappings( void );
 
 void R_ScreenShot_f( const idCmdArgs &args );
@@ -1076,6 +1077,9 @@ void		GLimp_SwapBuffers( void );
 // Calls the system specific swapbuffers routine, and may also perform
 // other system specific cvar checks that happen every frame.
 // This will not be called if 'r_drawBuffer GL_FRONT'
+
+void		GLimp_SnapshotGamma();
+// Saves the current hardware gamma so it can be restored on close
 
 void		GLimp_SetGamma( unsigned short red[256],
 							unsigned short green[256],
